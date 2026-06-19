@@ -169,8 +169,10 @@
         }
 
         .sections-track {
-            transition: transform 0.9s cubic-bezier(0.65, 0, 0.35, 1);
             will-change: transform;
+            transform: translateZ(0);
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
         }
 
         /* Section Base */
@@ -181,6 +183,9 @@
             justify-content: center;
             position: relative;
             overflow: hidden;
+            transform: translateZ(0);
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
         }
 
         .section--full {
@@ -213,7 +218,7 @@
             margin-bottom: 16px;
             opacity: 0;
             transform: translateY(20px);
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s, transform 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
             text-shadow: 0 0 10px rgba(41, 151, 255, 0.6), 0 0 30px rgba(41, 151, 255, 0.3);
         }
 
@@ -229,23 +234,21 @@
             background-clip: text;
             opacity: 0;
             transform: translateY(30px);
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.4s;
             text-shadow: 0 0 15px rgba(245, 245, 247, 0.5), 0 0 40px rgba(245, 245, 247, 0.1);
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.4s, transform 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.4s;
         }
-
         .hero-patronymic {
-            font-size: clamp(28px, 5vw, 60px);
+            font-size: clamp(28px, 5vw, 52px);
             font-weight: 300;
             letter-spacing: -0.02em;
             line-height: 1.2;
             margin-bottom: 24px;
             color: var(--text-primary);
+            text-shadow: 0 0 15px rgba(245, 245, 247, 0.5), 0 0 40px rgba(245, 245, 247, 0.1);
             opacity: 0;
             transform: translateY(25px);
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.5s;
-            text-shadow: 0 0 15px rgba(245, 245, 247, 0.5), 0 0 40px rgba(245, 245, 247, 0.1);
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.5s, transform 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.5s;
         }
-
         .hero-specialty {
             font-size: clamp(18px, 3vw, 28px);
             font-weight: 300;
@@ -255,17 +258,16 @@
             margin-bottom: 10px;
             opacity: 0;
             transform: translateY(20px);
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.6s;
-            text-shadow: 0 0 10px rgba(161, 161, 166, 0.5);
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.6s, transform 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.6s;
+            text-shadow: 0 0 10px rgba(161, 161, 166, 0.3);
         }
-
         .hero-group {
             font-size: clamp(15px, 2vw, 20px);
             font-weight: 400;
             color: var(--text-tertiary);
             opacity: 0;
             transform: translateY(20px);
-            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.9s;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.9s, transform 0.8s cubic-bezier(0.4, 0, 0.2, 1) 0.9s;
         }
 
         .hero-scroll-hint {
@@ -427,33 +429,33 @@
             text-transform: uppercase;
             letter-spacing: 0.15em;
             margin-bottom: 24px;
+            margin-top: 24px;
             opacity: 0;
             transform: translateY(20px);
-            transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.1s;
+            transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.1s, transform 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.1s;
             text-shadow: 0 0 10px rgba(41, 151, 255, 0.6), 0 0 30px rgba(41, 151, 255, 0.3);
         }
-
         .about-title {
-            font-size: clamp(32px, 5vw, 56px);
+            font-size: clamp(24px, 5vw, 56px);
             font-weight: 700;
             letter-spacing: -0.03em;
             line-height: 1.1;
             opacity: 0;
             transform: translateY(30px);
-            transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
+            transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.2s, transform 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
             text-shadow: 0 0 15px rgba(245, 245, 247, 0.5), 0 0 40px rgba(245, 245, 247, 0.1);
         }
-
         .about-text {
             font-size: clamp(16px, 2vw, 21px);
             font-weight: 300;
             color: var(--text-secondary);
             line-height: 1.7;
             max-width: 720px;
-            z-index: 100;
             opacity: 0;
             transform: translateY(25px);
-            transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.4s;
+            transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.4s, transform 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.4s;
+            position: relative;
+            z-index: 501;
         }
 
         .about-divider {
@@ -464,24 +466,23 @@
             opacity: 0;
             transform: scaleX(0);
             transform-origin: left;
-            transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.6s;
+            transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.6s, transform 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.6s;
             box-shadow: 0 0 12px rgba(41, 151, 255, 0.5), 0 0 25px rgba(41, 151, 255, 0.2);
         }
-
         .about-stats {
             display: flex;
             gap: clamp(24px, 5vw, 60px);
             margin-top: 40px;
             opacity: 0;
             transform: translateY(20px);
-            transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.7s;
+            transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.7s, transform 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.7s;
         }
 
         .stat-item {
             text-align: left;
         }
         .stat-item img {
-            filter: drop-shadow(0 0 0.75rem rgba(96, 250, 255, 0.2));
+            filter: drop-shadow(0 8px 0.5rem rgba(96, 205, 255, 0.18));
         }
 
         .stat-number {
@@ -532,10 +533,9 @@
             text-align: center;
             opacity: 0;
             transform: translateY(20px);
-            transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.1s;
+            transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.1s, transform 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.1s;
             text-shadow: 0 0 10px rgba(41, 151, 255, 0.6), 0 0 30px rgba(41, 151, 255, 0.3);
         }
-
         .achievements-title {
             font-size: clamp(32px, 5vw, 56px);
             font-weight: 700;
@@ -544,10 +544,9 @@
             margin-bottom: 16px;
             opacity: 0;
             transform: translateY(30px);
-            transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
+            transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.2s, transform 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.2s;
             text-shadow: 0 0 15px rgba(245, 245, 247, 0.5), 0 0 40px rgba(245, 245, 247, 0.1);
         }
-
         .achievements-subtitle {
             font-size: clamp(15px, 2vw, 19px);
             color: var(--text-tertiary);
@@ -556,7 +555,7 @@
             font-weight: 300;
             opacity: 0;
             transform: translateY(20px);
-            transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.3s;
+            transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.3s, transform 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.3s;
         }
 
         .section.visible .achievements-label,
@@ -573,7 +572,7 @@
             gap: 20px;
             opacity: 0;
             transform: translateY(30px);
-            transition: all 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.4s;
+            transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.4s, transform 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.4s;
         }
 
         .section.visible .gallery {
@@ -584,13 +583,13 @@
         .cert-card {
             overflow: hidden;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1), background 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             border-radius: 4px;
             border: 1px solid var(--viewer);
             background: rgba(41, 151, 255, 0.04);
             box-shadow: 0 0 40px rgba(90, 175, 255, 0.15), 0 0 80px rgba(0, 0, 0, 0.3), inset 0 0 60px rgba(0, 0, 0, 0.5);
             position: relative;
-            group: true;
+            transform: translateZ(0);
         }
 
         .cert-card:hover {
@@ -940,39 +939,44 @@
         @media (max-width: 768px) {
             .nav {
                 justify-content: flex-end;
+                backdrop-filter: none;
+                -webkit-backdrop-filter: none;
+                background: none;
+                border: none;
             }
-
             .nav-links {
                 position: fixed;
                 top: 0;
                 left: 0;
-                right: 0;
-                bottom: 0;
-                width: 100%;
-                height: 100%;
+                width: 100vw;
+                height: 100vh;
+                height: 100dvh;
                 background: #000000;
-                z-index: 105;
+                z-index: 502;
+                display: flex;
                 flex-direction: column;
                 align-items: center;
                 justify-content: center;
                 gap: 40px;
+                list-style: none;
+                margin: 0;
+                padding: 0;
                 opacity: 0;
                 visibility: hidden;
-                transition: all 0.4s ease;
+                transition: opacity 0.3s ease, visibility 0.3s ease;
             }
-
             .nav-links.open {
                 opacity: 1;
                 visibility: visible;
             }
-
             .nav-links a {
                 font-size: 24px;
                 font-weight: 500;
+                text-shadow: 0 0 10px rgba(245, 245, 247, 0.3);
             }
-
             .nav-burger {
                 display: block;
+                z-index: 503;
             }
 
             .section-indicators {
@@ -1287,7 +1291,12 @@
         const totalSections = sections.length;
 
         let nativeScrollMode = false;
-
+        const isMobile = window.matchMedia('(max-width: 768px)').matches;
+        const ANIM_DURATION = isMobile ? 0.5 : 0.9;
+        const ANIM_TIMING = isMobile
+            ? `transform ${ANIM_DURATION}s ease-out`
+            : `transform ${ANIM_DURATION}s cubic-bezier(0.65, 0, 0.35, 1)`;
+        const ANIM_WAIT = isMobile ? 550 : 950;
         function activateNativeScroll() {
             nativeScrollMode = true;
             sections[0].style.display = 'none';
@@ -1298,7 +1307,6 @@
             wrapper.style.overscrollBehavior = 'contain';
             wrapper.scrollTop = 0;
         }
-
         function deactivateNativeScroll() {
             nativeScrollMode = false;
             sections[0].style.display = '';
@@ -1346,13 +1354,13 @@
                 }
 
                 if (smooth) {
-                    track.style.transition = 'transform 0.9s cubic-bezier(0.65, 0, 0.35, 1)';
+                    track.style.transition = ANIM_TIMING;
                     track.style.transform = `translateY(-${offset}px)`;
                     // After animation completes, switch to native scroll
                     setTimeout(() => {
                         activateNativeScroll();
                         isAnimating = false;
-                    }, 950);
+                    }, ANIM_WAIT);
                 } else {
                     activateNativeScroll();
                     isAnimating = false;
@@ -1380,20 +1388,17 @@
                     track.style.transform = `translateY(-${startOffset}px)`;
                     requestAnimationFrame(() => {
                         requestAnimationFrame(() => {
-                            track.style.transition = 'transform 0.9s cubic-bezier(0.65, 0, 0.35, 1)';
+                            track.style.transition = ANIM_TIMING;
                             track.style.transform = `translateY(-${offset}px)`;
                         });
                     });
                 } else {
-                    track.style.transition = smooth
-                        ? 'transform 0.9s cubic-bezier(0.65, 0, 0.35, 1)'
-                        : 'none';
+                    track.style.transition = smooth ? ANIM_TIMING : 'none';
                     track.style.transform = `translateY(-${offset}px)`;
                 }
-
                 setTimeout(() => {
                     isAnimating = false;
-                }, smooth ? 950 : 50);
+                }, smooth ? ANIM_WAIT : 50);
             }
         }
 
