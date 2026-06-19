@@ -31,6 +31,7 @@
         html {
             overflow: hidden;
             height: 100%;
+            height: 100dvh;
             scroll-behavior: auto;
         }
 
@@ -57,6 +58,7 @@
             color: var(--text-primary);
             overflow: hidden;
             height: 100%;
+            height: 100dvh;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
@@ -164,6 +166,7 @@
         /* Sections Container */
         .sections-wrapper {
             height: 100vh;
+            height: 100dvh;
             overflow: hidden;
             position: relative;
         }
@@ -186,14 +189,16 @@
             transform: translateZ(0);
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
+            contain: layout style;
         }
 
         .section--full {
             height: 100vh;
+            height: 100dvh;
         }
-
         .section--auto {
             min-height: 100vh;
+            min-height: 100dvh;
         }
 
         .section-content {
@@ -645,10 +650,6 @@
             opacity: 0.3;
         }
 
-        .cert-placeholder-icon.pdf-icon {
-            color: #ff453a;
-        }
-
         .cert-placeholder-icon.img-icon {
             color: var(--accent);
         }
@@ -666,35 +667,6 @@
             text-shadow: 0 0 8px rgba(245, 245, 247, 0.25);
         }
 
-        .cert-hover-overlay {
-            position: absolute;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            pointer-events: none;
-        }
-
-        .cert-hover-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .cert-hover-icon svg {
-            width: 22px;
-            height: 22px;
-            color: white;
-        }
 
         /* File Viewer Modal — Retro CRT Style */
         .viewer-overlay {
@@ -793,32 +765,6 @@
             transition: transform 0.3s ease;
             user-select: none;
             -webkit-user-drag: none;
-        }
-        .viewer-body iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-        .viewer-body .placeholder-view {
-            text-align: center;
-            color: rgba(41, 151, 255, 0.4);
-            padding: 40px;
-        }
-        .placeholder-view svg {
-            width: 60px;
-            height: 60px;
-            margin-bottom: 16px;
-            opacity: 0.25;
-            color: var(--viewer);
-        }
-        .placeholder-view p {
-            font-size: 14px;
-            margin-bottom: 6px;
-            text-shadow: 0 0 8px rgba(41, 151, 255, 0.3);
-        }
-        .placeholder-view span {
-            font-size: 12px;
-            color: rgba(41, 151, 255, 0.25);
         }
         /* Nav arrows for viewer */
         .viewer-nav {
@@ -1032,6 +978,46 @@
 
             .hero-scroll-hint {
                 bottom: 24px;
+            }            /* CRT filter: promote to own GPU layer so it doesn't cause repaints */
+            html::before {
+                background-size: 100% 3px, 4px 100%;
+                will-change: transform;
+                transform: translateZ(0);
+                contain: strict;
+            }
+            /* Remove expensive text-shadows on mobile */
+            .hero-overline,
+            .hero-patronymic,
+            .hero-specialty,
+            .hero-group,
+            .hero-scroll-hint span,
+            .about-label,
+            .about-title,
+            .achievements-label,
+            .achievements-title,
+            .cert-name,
+            .stat-number {
+                text-shadow: none !important;
+            }
+            /* Simplify card hover effects */
+            .cert-card {
+                transition: none;
+            }
+            .cert-card:hover {
+                transform: none;
+                box-shadow: none;
+            }
+            /* Remove glow from divider */
+            .about-divider {
+                box-shadow: none;
+            }
+            /* Remove glow from indicator */
+            .indicator.active {
+                box-shadow: none;
+            }
+            /* Remove scroll arrow filter */
+            .scroll-arrow {
+                filter: none;
             }
         }
 
@@ -1199,33 +1185,32 @@
         //  Certificate Data
         // ============================
         const certificates = [
-            { name: 'Олимпиада "Энергия знаний" - Полуфиналист', type: 'jpg', file: 'certificates/Скан_20260619.jpg' },
-            { name: '3D-моделирование', type: 'jpg', file: 'certificates/Скан_20260619 (2).jpg' },
-            { name: 'IT-диктант', type: 'jpg', file: 'certificates/Сертификат.jpg' },
-            { name: 'IT-диктант PRO', type: 'jpg', file: 'certificates/Сертификат PRO.jpg' },
-            { name: 'Угрозы в интернете', type: 'jpg', file: 'certificates/Слайд106.jpg' },
-            { name: 'Эффективный промптинг', type: 'jpg', file: 'certificates/Слайд307.jpg' },
-            { name: 'Создание цифровой открытки', type: 'jpeg', file: 'certificates/Слайд198.jpeg' },
-            { name: 'II Всероссийская олимпиада по Английскому Языку - 1 место', type: 'jpg', file: 'certificates/26.jpg' },
-            { name: 'Наука во имя победы', type: 'jpg', file: 'certificates/Морозов Ярослав Андреевич.jpg' },
-            { name: 'Диктант победы', type: 'jpg', file: 'certificates/dictant_of_victory.jpg' },
-            { name: 'Большой Этнографический Диктант', type: 'jpg', file: 'certificates/sert-morozov-yaroslav-andreevich-ru_pages-to-jpg-0001.jpg' },
-            { name: 'Всероссийский налоговый диктант', type: 'jpg', file: 'certificates/cert_20974498.jpg' },
+            { name: 'Олимпиада "Энергия знаний" - Полуфиналист', file: 'certificates/Скан_20260619.jpg' },
+            { name: '3D-моделирование',file: 'certificates/Скан_20260619 (2).jpg' },
+            { name: 'IT-диктант', file: 'certificates/Сертификат.jpg' },
+            { name: 'IT-диктант PRO', file: 'certificates/Сертификат PRO.jpg' },
+            { name: 'Угрозы в интернете', file: 'certificates/Слайд106.jpg' },
+            { name: 'Эффективный промптинг', file: 'certificates/Слайд307.jpg' },
+            { name: 'Создание цифровой открытки', file: 'certificates/Слайд198.jpeg' },
+            { name: 'II Всероссийская олимпиада по Английскому Языку - 1 место', file: 'certificates/26.jpg' },
+            { name: 'Наука во имя победы', file: 'certificates/Морозов Ярослав Андреевич.jpg' },
+            { name: 'Диктант победы', file: 'certificates/dictant_of_victory.jpg' },
+            { name: 'Большой Этнографический Диктант', file: 'certificates/sert-morozov-yaroslav-andreevich-ru_pages-to-jpg-0001.jpg' },
+            { name: 'Всероссийский налоговый диктант', file: 'certificates/cert_20974498.jpg' },
         ];
+
+        // Preload all certificate images
+        certificates.forEach(cert => {
+            const img = new Image();
+            img.src = cert.file;
+        });
 
         // ============================
         //  Gallery Rendering
         // ============================
         const gallery = document.getElementById('gallery');
 
-        const pdfSvg = `<svg class="cert-placeholder-icon pdf-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
-            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
-            <polyline points="14 2 14 8 20 8"/>
-            <line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/>
-            <polyline points="10 9 9 9 8 9"/>
-        </svg>`;
-
-        const imgSvg = `<svg class="cert-placeholder-icon img-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+       const placeholderSvg = `<svg class="cert-placeholder-icon img-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
             <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
             <circle cx="8.5" cy="8.5" r="1.5"/>
             <polyline points="21 15 16 10 5 21"/>
@@ -1251,20 +1236,11 @@
             const card = document.createElement('div');
             card.className = 'cert-card';
             card.setAttribute('data-index', i);
-            const isImage = cert.type === 'png' || cert.type === 'jpg' || cert.type === 'jpeg';
-            const imgTag = isImage
-                ? `<img src="${cert.file}" alt="${cert.name}" loading="lazy" onerror="this.style.display='none'" onload="this.parentElement.querySelector('.cert-placeholder').style.display='none'">`
-                : '';
             card.innerHTML = `
                 <div class="cert-preview">
                     <div class="cert-preview-bg" style="background: ${gradients[i % gradients.length]}">
-                        <div class="cert-placeholder">
-                            ${cert.type === 'pdf' ? pdfSvg : imgSvg}
-                        </div>
-                        ${imgTag}
-                    </div>
-                    <div class="cert-hover-overlay">
-                        <div class="cert-hover-icon">${expandSvg}</div>
+                        <div class="cert-placeholder">${placeholderSvg}</div>
+                        <img src="${cert.file}" alt="${cert.name}" loading="lazy" onerror="this.style.display='none'" onload="this.parentElement.querySelector('.cert-placeholder').style.display='none'">
                     </div>
                 </div>
                 <div class="cert-info">
@@ -1286,244 +1262,128 @@
         let currentSection = 0;
         let isAnimating = false;
         let touchStartY = 0;
-        let touchStartX = 0;
-
-        const totalSections = sections.length;
-
-        let nativeScrollMode = false;
-        const isMobile = window.matchMedia('(max-width: 768px)').matches;
-        const ANIM_DURATION = isMobile ? 0.5 : 0.9;
-        const ANIM_TIMING = isMobile
-            ? `transform ${ANIM_DURATION}s ease-out`
-            : `transform ${ANIM_DURATION}s cubic-bezier(0.65, 0, 0.35, 1)`;
-        const ANIM_WAIT = isMobile ? 550 : 950;
-        function activateNativeScroll() {
-            nativeScrollMode = true;
-            sections[0].style.display = 'none';
-            sections[1].style.display = 'none';
-            track.style.transition = 'none';
-            track.style.transform = 'none';
-            wrapper.style.overflowY = 'auto';
-            wrapper.style.overscrollBehavior = 'contain';
-            wrapper.scrollTop = 0;
-        }
-        function deactivateNativeScroll() {
-            nativeScrollMode = false;
-            sections[0].style.display = '';
-            sections[1].style.display = '';
-            wrapper.style.overflow = 'hidden';
-            wrapper.style.overscrollBehavior = '';
-            wrapper.scrollTop = 0;
-        }
-
-        function updateSection(index, smooth = true) {
-            if (index < 0 || index >= totalSections || isAnimating) return;
-            isAnimating = true;
+        const T = 'transform 0.9s cubic-bezier(0.65, 0, 0.35, 1)';
+        let native = false;
+        function setUI(index) {
             currentSection = index;
-
-            // Update indicators
-            indicators.forEach((ind, i) => {
-                ind.classList.toggle('active', i === index);
-            });
-
-            // Update nav links
-            navLinksAll.forEach((link, i) => {
-                link.classList.toggle('active', i === index);
-            });
-
-            // Trigger visibility animations
-            sections.forEach((sec, i) => {
-                if (i === index) {
-                    sec.classList.add('visible');
-                } else {
-                    sec.classList.remove('visible');
-                }
-            });
-
+            indicators.forEach((ind, i) => ind.classList.toggle('active', i === index));
+            navLinksAll.forEach((link, i) => link.classList.toggle('active', i === index));
+            sections.forEach((sec, i) => sec.classList.toggle('visible', i === index));
+        }
+        function goTo(index, smooth = true) {
+            if (index < 0 || index > 2 || isAnimating) return;
+            isAnimating = true;
+            setUI(index);
             if (index === 2) {
-                if (nativeScrollMode) {
-                    // Already in native scroll mode
-                    wrapper.scrollTop = 0;
-                    isAnimating = false;
-                    return;
-                }
-                // Going TO section 3: animate transform first, then switch to native scroll
-                let offset = 0;
-                for (let i = 0; i < 2; i++) {
-                    offset += sections[i].offsetHeight;
-                }
-
-                if (smooth) {
-                    track.style.transition = ANIM_TIMING;
+                // Animate to section 3, then switch to native scroll
+                const offset = sections[0].offsetHeight + sections[1].offsetHeight;
+                if (smooth && !native) {
+                    track.style.transition = T;
                     track.style.transform = `translateY(-${offset}px)`;
-                    // After animation completes, switch to native scroll
                     setTimeout(() => {
-                        activateNativeScroll();
+                        native = true;
+                        sections[0].style.display = 'none';
+                        sections[1].style.display = 'none';
+                        track.style.transition = 'none';
+                        track.style.transform = 'none';
+                        wrapper.style.overflowY = 'auto';
+                        wrapper.scrollTop = 0;
                         isAnimating = false;
-                    }, ANIM_WAIT);
+                    }, 950);
                 } else {
-                    activateNativeScroll();
+                    native = true;
+                    sections[0].style.display = 'none';
+                    sections[1].style.display = 'none';
+                    track.style.transition = 'none';
+                    track.style.transform = 'none';
+                    wrapper.style.overflowY = 'auto';
+                    wrapper.scrollTop = 0;
                     isAnimating = false;
                 }
             } else {
                 // Going to section 0 or 1
-                const wasNative = nativeScrollMode;
-
+                const wasNative = native;
                 if (wasNative) {
-                    deactivateNativeScroll();
+                    native = false;
+                    sections[0].style.display = '';
+                    sections[1].style.display = '';
+                    wrapper.style.overflow = 'hidden';
+                    wrapper.scrollTop = 0;
                 }
-
-                let offset = 0;
-                for (let i = 0; i < index; i++) {
-                    offset += sections[i].offsetHeight;
-                }
-
+                const offset = index === 1 ? sections[0].offsetHeight : 0;
                 if (wasNative && smooth) {
-                    // Coming back from section 3: start from bottom, animate up
-                    let startOffset = 0;
-                    for (let i = 0; i < 2; i++) {
-                        startOffset += sections[i].offsetHeight;
-                    }
+                    const start = sections[0].offsetHeight + sections[1].offsetHeight;
                     track.style.transition = 'none';
-                    track.style.transform = `translateY(-${startOffset}px)`;
+                    track.style.transform = `translateY(-${start}px)`;
                     requestAnimationFrame(() => {
                         requestAnimationFrame(() => {
-                            track.style.transition = ANIM_TIMING;
+                            track.style.transition = T;
                             track.style.transform = `translateY(-${offset}px)`;
                         });
                     });
                 } else {
-                    track.style.transition = smooth ? ANIM_TIMING : 'none';
+                    track.style.transition = smooth ? T : 'none';
                     track.style.transform = `translateY(-${offset}px)`;
                 }
-                setTimeout(() => {
-                    isAnimating = false;
-                }, smooth ? ANIM_WAIT : 50);
+                setTimeout(() => { isAnimating = false; }, smooth ? 950 : 50);
             }
         }
-
-        function handleScroll(delta) {
-            if (isAnimating) return;
-
-            if (delta > 0) {
-                updateSection(currentSection + 1);
-            } else {
-                updateSection(currentSection - 1);
-            }
-        }
-
-        // Wheel event
-        let wheelTimeout = null;
-        let accumulatedDelta = 0;
-
+        // Wheel
+        let wheelTimer = null, wheelDelta = 0;
         wrapper.addEventListener('wheel', (e) => {
-            // Native scroll mode (section 3): only intercept scroll-up at top
-            if (nativeScrollMode) {
-                if (wrapper.scrollTop <= 1 && e.deltaY < 0) {
-                    e.preventDefault();
-                    updateSection(1);
-                }
+            if (native) {
+                if (wrapper.scrollTop <= 1 && e.deltaY < 0) { e.preventDefault(); goTo(1); }
                 return;
             }
-
-            // Sections 0-1: snap scroll
             e.preventDefault();
-            accumulatedDelta += e.deltaY;
-            if (wheelTimeout) return;
-
-            wheelTimeout = setTimeout(() => {
-                if (Math.abs(accumulatedDelta) > 30) {
-                    handleScroll(accumulatedDelta > 0 ? 1 : -1);
-                }
-                accumulatedDelta = 0;
-                wheelTimeout = null;
+            wheelDelta += e.deltaY;
+            if (wheelTimer) return;
+            wheelTimer = setTimeout(() => {
+                if (Math.abs(wheelDelta) > 30) goTo(currentSection + (wheelDelta > 0 ? 1 : -1));
+                wheelDelta = 0;
+                wheelTimer = null;
             }, 50);
         }, { passive: false });
-
-        // Touch events
-        wrapper.addEventListener('touchstart', (e) => {
-            touchStartY = e.touches[0].clientY;
-            touchStartX = e.touches[0].clientX;
-        }, { passive: true });
-
+        // Touch
+        wrapper.addEventListener('touchstart', (e) => { touchStartY = e.touches[0].clientY; }, { passive: true });
         wrapper.addEventListener('touchend', (e) => {
-            const touchEndY = e.changedTouches[0].clientY;
-            const touchEndX = e.changedTouches[0].clientX;
-            const diffY = touchStartY - touchEndY;
-            const diffX = touchStartX - touchEndX;
-
-            // Native scroll mode (section 3): only handle swipe-to-go-back at top
-            if (nativeScrollMode) {
-                if (wrapper.scrollTop <= 1 && diffY < -50 && Math.abs(diffY) > Math.abs(diffX)) {
-                    updateSection(1);
-                }
+            const diff = touchStartY - e.changedTouches[0].clientY;
+            if (native) {
+                if (wrapper.scrollTop <= 1 && diff < -50) goTo(1);
                 return;
             }
-
-            // Sections 0-1: snap scroll on vertical swipe
-            if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > 50) {
-                handleScroll(diffY > 0 ? 1 : -1);
-            }
+            if (Math.abs(diff) > 50) goTo(currentSection + (diff > 0 ? 1 : -1));
         }, { passive: true });
-
         // Keyboard
         document.addEventListener('keydown', (e) => {
-            if (document.getElementById('viewer').classList.contains('active')) return;
-
-            // Native scroll mode (section 3): only handle up-arrow to go back at top
-            if (nativeScrollMode) {
-                if ((e.key === 'ArrowUp' || e.key === 'PageUp') && wrapper.scrollTop <= 1) {
-                    e.preventDefault();
-                    updateSection(1);
-                }
+            if (viewer.classList.contains('active')) return;
+            if (native) {
+                if (wrapper.scrollTop <= 1 && (e.key === 'ArrowUp' || e.key === 'PageUp')) { e.preventDefault(); goTo(1); }
                 return;
             }
-
-            if (e.key === 'ArrowDown' || e.key === 'PageDown') {
-                e.preventDefault();
-                handleScroll(1);
-            } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
-                e.preventDefault();
-                handleScroll(-1);
-            }
+            if (e.key === 'ArrowDown' || e.key === 'PageDown') { e.preventDefault(); goTo(currentSection + 1); }
+            else if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); goTo(currentSection - 1); }
         });
-
-        // Indicator clicks
-        indicators.forEach(ind => {
-            ind.addEventListener('click', () => {
-                const idx = parseInt(ind.dataset.section);
-                updateSection(idx);
-            });
-        });
-
-        // Nav link clicks
-        navLinksAll.forEach(link => {
-            link.addEventListener('click', () => {
-                const idx = parseInt(link.dataset.section);
-                updateSection(idx);
-                // Close mobile menu
-                document.getElementById('navLinks').classList.remove('open');
-                document.getElementById('burger').classList.remove('active');
-            });
-        });
-
-        // Burger menu
+        // Nav clicks
+        indicators.forEach(ind => ind.addEventListener('click', () => goTo(parseInt(ind.dataset.section))));
+        navLinksAll.forEach(link => link.addEventListener('click', () => {
+            goTo(parseInt(link.dataset.section));
+            document.getElementById('navLinks').classList.remove('open');
+            document.getElementById('burger').classList.remove('active');
+        }));
+        // Burger
         const burger = document.getElementById('burger');
         const navLinks = document.getElementById('navLinks');
-        burger.addEventListener('click', () => {
-            burger.classList.toggle('active');
-            navLinks.classList.toggle('open');
-        });
-
-        // Resize handler
-        window.addEventListener('resize', () => {
-            updateSection(currentSection, false);
-        });
+        burger.addEventListener('click', () => { burger.classList.toggle('active'); navLinks.classList.toggle('open'); });
+        // Resize
+        let resizeTimer;
+        window.addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(() => goTo(currentSection, false), 150); });
+        // Init
+        goTo(0, false);
 
         // ============================
         //  File Viewer
         // ============================
-        const viewer = document.getElementById('viewer');
         const viewerBody = document.getElementById('viewerBody');
         const viewerName = document.getElementById('viewerName');
         const viewerBadge = document.getElementById('viewerBadge');
@@ -1550,48 +1410,19 @@
             viewer.classList.remove('active');
         }
 
+                // Create persistent viewer image element
+        const viewerImg = document.createElement('img');
+        viewerImg.style.cssText = 'max-width:100%;max-height:100%;object-fit:contain;z-index:1;transition:transform 0.3s ease;user-select:none;';
+        viewerBody.appendChild(viewerImg);
         function updateViewerContent() {
             const cert = certificates[currentViewIndex];
             viewerName.textContent = cert.name;
             viewerCounter.textContent = `${currentViewIndex + 1} / ${certificates.length}`;
             currentZoom = 1;
             zoomLevelEl.textContent = '100%';
-
-            if (cert.type === 'png' || cert.type === 'jpg' || cert.type === 'jpeg') {
-                viewerBody.innerHTML = `
-                    <div class="placeholder-view">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                            <circle cx="8.5" cy="8.5" r="1.5"/>
-                            <polyline points="21 15 16 10 5 21"/>
-                        </svg>
-                        <p>${cert.name}</p>
-                        <span>Файл: ${cert.file}</span>
-                        <br><br>
-                        <span style="font-size:12px; opacity:0.5;">Поместите файл по указанному пути для отображения</span>
-                    </div>
-                    <img src="${cert.file}" alt="${cert.name}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:contain;z-index:1;" onerror="this.style.display='none'" onload="this.previousElementSibling.style.display='none'">
-                `;
-            } else if (cert.type === 'pdf') {
-                viewerBody.innerHTML = `
-                    <div class="placeholder-view" id="pdfPlaceholder">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1">
-                            <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/>
-                            <polyline points="14 2 14 8 20 8"/>
-                            <line x1="16" y1="13" x2="8" y2="13"/>
-                            <line x1="16" y1="17" x2="8" y2="17"/>
-                        </svg>
-                        <p>${cert.name}</p>
-                        <span>Файл: ${cert.file}</span>
-                        <br><br>
-                        <span style="font-size:12px; opacity:0.5;">Поместите PDF-файл по указанному пути для отображения</span>
-                    </div>
-                    <iframe src="${cert.file}" style="position:absolute;inset:0;width:100%;height:100%;z-index:1;background:white;" onload="
-                        var ph = document.getElementById('pdfPlaceholder');
-                        if(ph) ph.style.display='none';
-                    " onerror="this.style.display='none'"></iframe>
-                `;
-            }
+            viewerImg.style.transform = 'scale(1)';
+            viewerImg.src = cert.file;
+            viewerImg.alt = cert.name;
         }
 
         viewerClose.addEventListener('click', closeViewer);
@@ -1641,10 +1472,7 @@
         function zoomView(delta) {
             currentZoom = Math.max(0.25, Math.min(3, currentZoom + delta));
             zoomLevelEl.textContent = Math.round(currentZoom * 100) + '%';
-            const img = viewerBody.querySelector('img');
-            if (img) {
-                img.style.transform = `scale(${currentZoom})`;
-            }
+            viewerImg.style.transform = `scale(${currentZoom})`;
         }
 
         // Swipe on viewer
@@ -1665,13 +1493,11 @@
         // ============================
         updateSection(0, false);
 
-        // Middle mouse button scrolling (autoscroll)
+        // Middle mouse button scrolling
         let middleMouseScrolling = false;
         let middleMouseY = 0;
-        let middleMouseInterval = null;
-
         wrapper.addEventListener('mousedown', (e) => {
-            if (e.button === 1) { // Middle mouse button
+            if (e.button === 1) {
                 e.preventDefault();
                 middleMouseScrolling = true;
                 middleMouseY = e.clientY;
@@ -1698,7 +1524,6 @@
             if (e.button === 1 || middleMouseScrolling) {
                 middleMouseScrolling = false;
                 document.body.style.cursor = '';
-                clearInterval(middleMouseInterval);
             }
         });
 
