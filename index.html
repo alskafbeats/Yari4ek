@@ -576,13 +576,10 @@
             grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
             gap: 20px;
             opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.4s, transform 0.7s cubic-bezier(0.4, 0, 0.2, 1) 0.4s;
+            transition: opacity 0.6s ease 0.3s;
         }
-
         .section.visible .gallery {
             opacity: 1;
-            transform: translateY(0);
         }
 
         .cert-card {
@@ -628,10 +625,6 @@
             height: 100%;
             object-fit: cover;
             z-index: 1;
-            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .cert-card:hover .cert-preview-bg img {
-            transform: scale(1.05);
         }
 
         .cert-placeholder {
@@ -1088,7 +1081,7 @@
         <div class="sections-track" id="track">
 
             <!-- Section 1: Hero -->
-            <section class="section section--full hero visible" data-index="0">
+            <section class="section section--full hero" data-index="0">
                 <div class="hero-glow"></div>
                 <div class="glow-spot glow-spot-1"></div>
                 <div class="glow-spot glow-spot-2"></div>
@@ -1199,10 +1192,34 @@
             { name: 'Всероссийский налоговый диктант', file: 'certificates/cert_20974498.jpg' },
         ];
 
-        // Preload all certificate images
-        certificates.forEach(cert => {
+// Preload originals and generate lightweight gallery thumbnails
+        const thumbnailCache = new Map();
+        function createThumbnail(img, maxWidth = 320, quality = 0.6) {
+            try {
+                if (!img.naturalWidth) return null;
+                const ratio = img.naturalWidth / img.naturalHeight || 1;
+                const width = Math.min(maxWidth, img.naturalWidth);
+                const height = Math.round(width / ratio);
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+                const data = canvas.toDataURL('image/jpeg', quality);
+                return data.length > 200 ? data : null;
+            } catch {
+                return null;
+            }
+        }
+        const preloadTasks = certificates.map((cert, index) => {
             const img = new Image();
+            img.decoding = 'async';
             img.src = cert.file;
+            return img.decode()
+                .then(() => {
+                    thumbnailCache.set(index, createThumbnail(img));
+                })
+                .catch(() => {});
         });
 
         // ============================
@@ -1232,7 +1249,17 @@
             'linear-gradient(135deg, #1b1b2f 0%, #1a1a3e 50%, #2d3436 100%)',
         ];
 
-        certificates.forEach((cert, i) => {
+        function applyThumbnail(index) {
+            const card = gallery.querySelector(`.cert-card[data-index="${index}"]`);
+            if (!card) return;
+            const img = card.querySelector('.cert-preview-bg img');
+            const placeholder = card.querySelector('.cert-placeholder');
+            const thumb = thumbnailCache.get(index);
+            const source = thumb || certificates[index].file;
+            img.src = source;
+            img.onload = () => { if (placeholder) placeholder.style.display = 'none'; };
+        }
+certificates.forEach((cert, i) => {
             const card = document.createElement('div');
             card.className = 'cert-card';
             card.setAttribute('data-index', i);
@@ -1240,15 +1267,25 @@
                 <div class="cert-preview">
                     <div class="cert-preview-bg" style="background: ${gradients[i % gradients.length]}">
                         <div class="cert-placeholder">${placeholderSvg}</div>
-                        <img src="${cert.file}" alt="${cert.name}" loading="lazy" onerror="this.style.display='none'" onload="this.parentElement.querySelector('.cert-placeholder').style.display='none'">
+                        <img alt="${cert.name}" decoding="async" loading="lazy">
+                    </div>
+                    <div class="cert-hover-overlay">
+                        <div class="cert-hover-icon">${expandSvg}</div>
                     </div>
                 </div>
                 <div class="cert-info">
                     <div class="cert-name">${cert.name}</div>
+                    <div class="cert-meta">
+                        <span class="cert-date">${cert.date}</span>
+                    </div>
                 </div>
             `;
             card.addEventListener('click', () => openViewer(i));
             gallery.appendChild(card);
+        });
+        // As each thumbnail is ready, paint it into its card
+        preloadTasks.forEach((task, i) => {
+            task.then(() => applyThumbnail(i));
         });
 
         // ============================
@@ -1378,8 +1415,39 @@
         // Resize
         let resizeTimer;
         window.addEventListener('resize', () => { clearTimeout(resizeTimer); resizeTimer = setTimeout(() => goTo(currentSection, false), 150); });
-        // Init
-        goTo(0, false);
+        // Init — set position without visible, then trigger entrance animation
+        currentSection = 0;
+        track.style.transition = 'none';
+        track.style.transform = 'translateY(0)';
+        indicators[0].classList.add('active');
+        navLinksAll[0].classList.add('active');
+        isAnimating = false;
+        requestAnimationFrame(() => {
+            sections[0].classList.add('visible');
+        });
+        // Pre-render section 3 off-screen so browser rasterizes it ahead of time
+        const preRender = () => {
+            sections[2].style.visibility = 'hidden';
+            sections[2].style.position = 'absolute';
+            sections[2].style.top = '0';
+            sections[2].style.left = '0';
+            sections[2].style.width = '100%';
+            sections[2].offsetHeight; // force layout
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    sections[2].style.visibility = '';
+                    sections[2].style.position = '';
+                    sections[2].style.top = '';
+                    sections[2].style.left = '';
+                    sections[2].style.width = '';
+                });
+            });
+        };
+        if ('requestIdleCallback' in window) {
+            requestIdleCallback(preRender);
+        } else {
+            setTimeout(preRender, 500);
+        }
 
         // ============================
         //  File Viewer
