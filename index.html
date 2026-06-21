@@ -978,6 +978,16 @@
                 transform: translateZ(0);
                 contain: strict;
             }
+            /* Remove expensive text-shadows on mobile */
+            .hero-group,
+            .hero-scroll-hint span,
+            .about-text,
+            .achievements-subtitle,
+            .cert-name,
+            .cert-info,
+            .stat-number {
+                text-shadow: none !important;
+            }
             /* Simplify card hover effects */
             .cert-card {
                 transition: none;
