@@ -451,7 +451,7 @@
             text-shadow: 0 0 15px rgba(245, 245, 247, 0.5), 0 0 40px rgba(245, 245, 247, 0.1);
         }
         .about-text {
-            font-size: clamp(16px, 2vw, 21px);
+            font-size: clamp(14px, 2vw, 21px);
             font-weight: 300;
             color: var(--text-secondary);
             line-height: 1.7;
@@ -978,7 +978,9 @@
                 bottom: 24px;
             }            /* CRT filter: promote to own GPU layer so it doesn't cause repaints */
             html::before {
-                background-size: 100% 3px, 4px 100%;
+                background:
+                    linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.12) 50%);
+                background-size: 100% 3px;
                 will-change: transform;
                 transform: translateZ(0);
                 contain: strict;
@@ -1307,17 +1309,27 @@
         let isAnimating = false;
         let touchStartY = 0;
         const T = 'transform 0.9s cubic-bezier(0.65, 0, 0.35, 1)';
+        const isMobileView = window.matchMedia('(max-width: 768px)').matches;
         let native = false;
-        function setUI(index) {
+        function setTransitioning(on) {
+            if (isMobileView) {
+                document.documentElement.classList.toggle('transitioning', on);
+            }
+        }
+        function setMarkers(index) {
             currentSection = index;
             indicators.forEach((ind, i) => ind.classList.toggle('active', i === index));
             navLinksAll.forEach((link, i) => link.classList.toggle('active', i === index));
+        }
+        function setVisible(index) {
             sections.forEach((sec, i) => sec.classList.toggle('visible', i === index));
         }
         function goTo(index, smooth = true) {
             if (index < 0 || index > 2 || isAnimating) return;
             isAnimating = true;
-            setUI(index);
+            if (smooth) setTransitioning(true);
+            setMarkers(index);
+            if (!smooth) setVisible(index);
             if (index === 2) {
                 // Animate to section 3, then switch to native scroll
                 const offset = sections[0].offsetHeight + sections[1].offsetHeight;
@@ -1325,6 +1337,7 @@
                     track.style.transition = T;
                     track.style.transform = `translateY(-${offset}px)`;
                     setTimeout(() => {
+                        setVisible(index);
                         native = true;
                         sections[0].style.display = 'none';
                         sections[1].style.display = 'none';
@@ -1332,9 +1345,11 @@
                         track.style.transform = 'none';
                         wrapper.style.overflowY = 'auto';
                         wrapper.scrollTop = 0;
+                        setTransitioning(false);
                         isAnimating = false;
                     }, 950);
                 } else {
+                    setVisible(index);
                     native = true;
                     sections[0].style.display = 'none';
                     sections[1].style.display = 'none';
@@ -1369,7 +1384,11 @@
                     track.style.transition = smooth ? T : 'none';
                     track.style.transform = `translateY(-${offset}px)`;
                 }
-                setTimeout(() => { isAnimating = false; }, smooth ? 950 : 50);
+                setTimeout(() => {
+                    setVisible(index);
+                    setTransitioning(false);
+                    isAnimating = false;
+                }, smooth ? 950 : 50);
             }
         }
         // Wheel
