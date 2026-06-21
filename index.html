@@ -576,10 +576,12 @@
             grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
             gap: 20px;
             opacity: 0;
-            transition: opacity 0.6s ease 0.3s;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease 0.3s, transform 0.6s ease 0.3s;
         }
         .section.visible .gallery {
             opacity: 1;
+            transform: translateY(0);
         }
 
         .cert-card {
@@ -1308,7 +1310,12 @@
         let currentSection = 0;
         let isAnimating = false;
         let touchStartY = 0;
-        const T = 'transform 0.9s cubic-bezier(0.65, 0, 0.35, 1)';
+        // === Timing Config ===
+        const ANIM_DURATION = 0.75;                        // секунды — длительность анимации прокрутки
+        const CONTENT_DELAY = 400;                         // мс — задержка до появления контента новой секции
+        const UNLOCK_DELAY  = Math.round(ANIM_DURATION * 1000) + 500;  // мс — разблокировка после завершения анимации
+        const NATIVE_DELAY  = Math.round(ANIM_DURATION * 1000) + 100; // мс — задержка до смены на обычный скролл (секция 3)
+        const T = `transform ${ANIM_DURATION}s cubic-bezier(0.65, 0, 0.35, 1)`;
         const isMobileView = window.matchMedia('(max-width: 768px)').matches;
         let native = false;
         function setTransitioning(on) {
@@ -1336,8 +1343,10 @@
                 if (smooth && !native) {
                     track.style.transition = T;
                     track.style.transform = `translateY(-${offset}px)`;
+                    // Контент появляется с задержкой
+                    setTimeout(() => setVisible(index), CONTENT_DELAY);
+                    // Смена на обычный скролл
                     setTimeout(() => {
-                        setVisible(index);
                         native = true;
                         sections[0].style.display = 'none';
                         sections[1].style.display = 'none';
@@ -1345,9 +1354,12 @@
                         track.style.transform = 'none';
                         wrapper.style.overflowY = 'auto';
                         wrapper.scrollTop = 0;
+                    }, NATIVE_DELAY);
+                    // Разблокировка
+                    setTimeout(() => {
                         setTransitioning(false);
                         isAnimating = false;
-                    }, 950);
+                    }, UNLOCK_DELAY);
                 } else {
                     setVisible(index);
                     native = true;
@@ -1384,11 +1396,13 @@
                     track.style.transition = smooth ? T : 'none';
                     track.style.transform = `translateY(-${offset}px)`;
                 }
+                // Контент появляется с задержкой
+                if (smooth) setTimeout(() => setVisible(index), CONTENT_DELAY);
+                // Разблокировка
                 setTimeout(() => {
-                    setVisible(index);
                     setTransitioning(false);
                     isAnimating = false;
-                }, smooth ? 950 : 50);
+                }, smooth ? UNLOCK_DELAY : 50);
             }
         }
         // Wheel
